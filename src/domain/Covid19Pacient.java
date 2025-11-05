@@ -10,6 +10,7 @@ import java.util.Observable;
 import java.util.Set;
 
 import factory.ISymptomFactory;
+import factory.SymptomFactory;
 import iterator.Covid19PacientIterator;
 
 public class Covid19Pacient {
@@ -94,6 +95,12 @@ public class Covid19Pacient {
 		impact=afection+increment;
 		return impact;
 	}
+
+
+	public void setSymptomFactory(ISymptomFactory symptomFactory) {
+		this.symptomFactory = symptomFactory;
+	}
+
 	
 }
 
