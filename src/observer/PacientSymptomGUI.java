@@ -3,6 +3,9 @@ package observer;
 
 import javax.swing.JFrame;
 
+import factory.SymptomFactory;
+import domain.ISymptom;
+
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -42,26 +45,29 @@ public class PacientSymptomGUI extends JFrame {
 		lblSelectSymptom.setBounds(32, 68, 100, 16);
 		contentPane.add(lblSelectSymptom);
 		
-		/*
-		symptomComboBox = new JComboBox<Symptom>();
-		symptomComboBox.setBounds(195, 57, 192, 27);
-		symptomComboBox.addItem(new Symptom("fiebre",100,5));
-		symptomComboBox.addItem(new Symptom("tos seca",100,5));
-		symptomComboBox.addItem(new Symptom("astenia",100,5));
-		symptomComboBox.addItem(new Symptom("expectoracion",100,5));
 		
-		symptomComboBox.addItem(new Symptom("disnea",100,3));
-		symptomComboBox.addItem(new Symptom("dolor de garganta",100,3));
-		symptomComboBox.addItem(new Symptom("cefalea",100,3));
-		symptomComboBox.addItem(new Symptom("mialgia",100,3));
-		symptomComboBox.addItem(new Symptom("escalofríos",100,3));
+		symptomComboBox = new JComboBox<ISymptom>();
+		symptomComboBox.setBounds(195, 57, 192, 27);
+		
+		SymptomFactory factory = new SymptomFactory();
+		
+		symptomComboBox.addItem(factory.createSymptom("fiebre"));
+		symptomComboBox.addItem(factory.createSymptom("tos seca"));
+		symptomComboBox.addItem(factory.createSymptom("astenia"));
+		symptomComboBox.addItem(factory.createSymptom("expectoracion"));
+		
+		symptomComboBox.addItem(factory.createSymptom("disnea"));
+		symptomComboBox.addItem(factory.createSymptom("dolor de garganta"));
+		symptomComboBox.addItem(factory.createSymptom("cefalea"));
+		symptomComboBox.addItem(factory.createSymptom("mialgia"));
+		symptomComboBox.addItem(factory.createSymptom("escalofríos"));
 
-		symptomComboBox.addItem(new Symptom("náuseas o vómitos",100,1));
-		symptomComboBox.addItem(new Symptom("congestión nasal",100,1));
-		symptomComboBox.addItem(new Symptom("diarrea",100,1));
-		symptomComboBox.addItem(new Symptom("hemoptisis",100,1));
-		symptomComboBox.addItem(new Symptom("congestión conjuntival",100,1));
-		*/
+		symptomComboBox.addItem(factory.createSymptom("náuseas o vómitos"));
+		symptomComboBox.addItem(factory.createSymptom("congestión nasal"));
+		symptomComboBox.addItem(factory.createSymptom("diarrea"));
+		symptomComboBox.addItem(factory.createSymptom("hemoptisis"));
+		symptomComboBox.addItem(factory.createSymptom("congestión conjuntival"));
+		
 		
 		
 		contentPane.add(symptomComboBox);
@@ -83,6 +89,7 @@ public class PacientSymptomGUI extends JFrame {
 		    	//System.out.println("Symptom added :"+(Symptom)symptomComboBox.getSelectedItem());
 
 				//addSymptomByName ...
+				p.addSymptomByName(((ISymptom)symptomComboBox.getSelectedItem()).getName(),	Integer.parseInt(weightField.getText()));
 				
 			} else errorLabel.setText("ERROR, Weight between [1..3]");
 				
@@ -99,6 +106,7 @@ public class PacientSymptomGUI extends JFrame {
 		    	//System.out.println("Symptom removed :"+(Symptom)symptomComboBox.getSelectedItem());
 
 				//removeSymptomByName...
+				p.removeSymptomByName(((ISymptom)symptomComboBox.getSelectedItem()).getName());
 				
 			} 
 		});

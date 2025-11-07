@@ -1,19 +1,21 @@
 package domain;
 import java.util.ArrayList;
 
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import factory.ISymptomFactory;
 import factory.SymptomFactory;
 import iterator.Covid19PacientIterator;
 
-public class Covid19Pacient {
+public class Covid19Pacient extends Observable{
 	private String  name; 
 	private int age;
 	private Map<ISymptom,Integer> symptoms=new HashMap<ISymptom,Integer>();
@@ -22,6 +24,7 @@ public class Covid19Pacient {
 	public Covid19Pacient(String name, int years) {
 		this.name = name;
 		this.age = years;
+		this.symptomFactory = new SymptomFactory();
 	}
 	
 	public String getName() {
@@ -43,6 +46,10 @@ public class Covid19Pacient {
 	public Set<ISymptom> getSymptoms() {
 		return symptoms.keySet();
 	}
+	public void setSymptomFactory(SymptomFactory symptomFactory2) {
+		this.symptomFactory = new SymptomFactory();
+		
+	}
 	
 	public ISymptom getSymptomByName(String symptomName) {
 		Iterator<ISymptom> i= getSymptoms().iterator();
@@ -61,46 +68,55 @@ public class Covid19Pacient {
 	public ISymptom addSymptomByName(String symptom, Integer w){
 		ISymptom s=null;
 		s=symptomFactory.createSymptom(symptom); 
-		if (s!=null) 
-			symptoms.put(s,w);		
+		if (s!=null) {
+			symptoms.put(s,w);
+			setChanged();
+			notifyObservers();
+		}
 		return s;
+		
 	}
 
 	public ISymptom removeSymptomByName(String symptomName) {
 		ISymptom s=getSymptomByName(symptomName);
 		System.out.println("Simptom to remove: "+s);
-		if (s!=null) symptoms.remove(s);
+		if (s!=null) {
+			symptoms.remove(s);
+			setChanged();
+			notifyObservers();
+		}
 		return s;
+		
 	}
 	public Iterator iterator() {
 		return new Covid19PacientIterator(this.symptoms.keySet());
 	}
 	
 	public double covidImpact() {
-		double afection=0;
-		double increment=0;
-		double impact=0;
+		if (symptoms.isEmpty()) {
+			return 0;
+		}else {
+			double afection=0;
+			double increment=0;
+			double impact=0;
 		
-		//calculate afection
-		for (ISymptom c: symptoms.keySet()) {
-			if (c!=null )
-			   afection=afection+c.getSeverityIndex()*symptoms.get(c);
+			//calculate afection
+			for (ISymptom c: symptoms.keySet()) {
+				if (c!=null )
+					afection=afection+c.getSeverityIndex()*symptoms.get(c);
+			}	
+			afection=afection/symptoms.size();
+		
+			//calculate increment
+			if (getAge()>65) increment=afection*0.5;
+		
+			//calculate impact
+			impact=afection+increment;
+			return impact;
 		}
-		afection=afection/symptoms.size();
-		
-		//calculate increment
-		if (getAge()>65) increment=afection*0.5;
-		
-		//calculate impact
-		impact=afection+increment;
-		return impact;
 	}
 
-
-	public void setSymptomFactory(ISymptomFactory symptomFactory) {
-		this.symptomFactory = symptomFactory;
-	}
-
+	
 	
 }
 
